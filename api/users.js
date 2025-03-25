@@ -15,22 +15,33 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method === "GET") {
+  if (req.method === "POST") {
+    const { page = 1, limit = 20 } = req.body;
+    const offset = (page - 1) * limit;
+
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
     });
+
     try {
-      const [rows] = await connection.execute("SELECT * FROM User LIMIT 50");
-      res.status(200).json(rows);
+      const [rows] = await connection.execute("SELECT * FROM User LIMIT ? OFFSET ?", [
+        limit,
+        offset,
+      ]);
+
+      const [countResult] = await connection.execute("SELECT COUNT(*) as total FROM User");
+      const total = countResult[0].total;
+      const hasMore = offset + limit < total;
+
+      res.status(200).json({ users: rows, hasMore });
     } catch (error) {
       res.status(500).json({ error: "Ошибка БД" });
     } finally {
       await connection.end();
     }
-    return;
   }
 
   if (req.method === "PATCH") {
