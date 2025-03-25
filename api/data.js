@@ -4,6 +4,14 @@ import mysql from "mysql2/promise";
 export default async function handler(req, res) {
   const app = express();
 
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   app.get("/api/data", async (req, res) => {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
