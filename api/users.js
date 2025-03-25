@@ -51,25 +51,8 @@ export default async function handler(req, res) {
       const updates = [];
       const values = [];
 
-      if (name) {
-        updates.push("name = ?");
-        values.push(name);
-      }
-
-      if (jobTitle) {
-        updates.push("jobTitle = ?");
-        values.push(jobTitle);
-      }
-
-      if (department) {
-        updates.push("department = ?");
-        values.push(department);
-      }
-
-      if (company) {
-        updates.push("company = ?");
-        values.push(company);
-      }
+      updates.push("name = ?", "jobTitle = ?", "department = ?", "company = ?");
+      values.push(name, jobTitle, department, company);
 
       const sql = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
       values.push(id);
