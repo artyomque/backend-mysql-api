@@ -30,8 +30,7 @@ export default async function handler(req, res) {
     } finally {
       await connection.end();
     }
-  } else {
-    res.status(405).end();
+    return;
   }
 
   if (req.method === "PATCH") {
@@ -80,6 +79,9 @@ export default async function handler(req, res) {
     } catch (e) {
       console.error("PATCH error:", error);
       res.status(500).json({ error: "не удалось обновить данные пользователя" });
+    } finally {
+      if (connection) await connection.end();
     }
   }
+  res.status(405).end();
 }
