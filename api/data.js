@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     });
 
     try {
-      const [rows] = await connection.execute("SELECT * FROM your_table LIMIT 50");
+      const [rows] = await connection.execute("SELECT * FROM users LIMIT 50");
       res.status(200).json(rows);
     } catch (error) {
       console.error(error);
