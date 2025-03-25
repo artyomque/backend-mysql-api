@@ -36,6 +36,8 @@ export default async function handler(req, res) {
       const total = countResult[0].total;
       const hasMore = offset + limit < total;
 
+      console.log("page:", page, "limit:", limit, "offset:", offset);
+
       res.status(200).json({ users: rows, hasMore });
     } catch (error) {
       res.status(500).json({ error: "Ошибка БД" });
