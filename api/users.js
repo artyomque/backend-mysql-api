@@ -16,14 +16,21 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET") {
+    const { page = 1, limit = 50 } = req.body;
+    const offset = (page - 1) * limit;
+
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
     });
+
     try {
-      const [rows] = await connection.execute("SELECT * FROM User LIMIT 50");
+      const [rows] = await connection.execute("SELECT * FROM User LIMIT ? OFFSET ?", [
+        limit,
+        offset,
+      ]);
       res.status(200).json(rows);
     } catch (error) {
       res.status(500).json({ error: "Ошибка БД" });
